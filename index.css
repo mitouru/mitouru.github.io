@@ -1,0 +1,166 @@
+#video-container {
+    position: relative;
+    margin: auto;
+    width: 500px;
+    height: 375px;
+}
+
+#video {
+    object-fit: cover;
+    /* width: 500px; */
+    /* height: 375px; */
+    width: 100%;
+    height: 100%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+#script-container{
+  /* max-height: 300px;  */
+  height: 260px;
+  width: auto;
+}
+
+#emoji-container{
+  font-size: 4em; 
+  height: 150px; 
+  width:100%;
+}
+
+#score-container{
+  height:50px; 
+  width:100%; 
+  font-size: 2em;
+}
+
+#advice-container{
+  margin-top: 20px;
+  max-height: 300px;
+  height: 225px;
+}
+
+
+#allEmotionsParent{
+  margin-top: 10px;
+  background-color: white;
+  height: 315px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  /* transform: perspective(300px); */
+}
+
+
+#happyParent{
+  background-color: white;
+  height: 315px;
+  margin-top: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  /* transform: perspective(300px); */
+}
+
+
+.modebar{
+  display: none !important;
+}
+
+/* Responsive changes */
+@media only screen and (max-width: 450px) {
+
+  #video-container {
+    margin: auto;
+    position: relative;
+    /* margin-top: 10px; */
+    width: 169px;
+    height: 225px;
+  }
+
+  #video {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  #canvas {
+      object-fit: cover;
+      position: absolute;
+  }
+
+  #scriptCard{
+    /* margin-top: 230px;*/
+    margin-top: 5px;
+  }
+
+  #script-container{
+    height: 75px;
+    font-size: 0.80em;
+  }
+
+  #score-container{
+    height: 50px;
+  }
+
+  #emoji-container{
+    height: 50px;
+    font-size: 2em;
+  }
+
+  #advice-container{
+    font-size: 0.85em;
+    height: 110px;
+  }
+
+  .card-title{
+    font-size: 1em;
+  }
+
+  .card{
+    margin: 5px;
+  }
+
+  .col-1 {width: 8.33%;}
+  .col-2 {width: 16.66%;}
+  .col-3 {width: 25%;}
+  .col-4 {width: 33.33%;}
+  .col-5 {width: 41.66%;}
+  .col-6 {width: 50%;}
+  .col-7 {width: 58.33%;}
+  .col-8 {width: 66.66%;}
+  .col-9 {width: 75%;}
+  .col-10 {width: 83.33%;}
+  .col-11 {width: 91.66%;}
+  .col-12 {width: 100%;}
+
+}
+
+ /* Background Colors of the elements */
+
+body{
+  background-color: azure;
+}
+/*  */
+
+#smileCard{
+  background-color:#fbd1a2;
+}
+
+#moodCard{
+  background-color:#7dcfb6;
+  background-color:#EFF9DA;
+}
+
+#adviceCard{
+  background-color:#d6cdea;
+  background-color: #F9EBDF;
+
+}
+
+#scriptCard{
+  background-color: #F9D8D6;
+}

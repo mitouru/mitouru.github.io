@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>NICORI</title>
+  
+  <!-- Font Awesome -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    rel="stylesheet"
+  />
+  <!-- MDB -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.css"
+    rel="stylesheet"
+  />
+  <script
+    type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"
+  ></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.24.2/plotly.min.js" integrity="sha512-dAXqGCq94D0kgLSPnfvd/pZpCMoJQpGj2S2XQmFQ9Ay1+96kbjss02ISEh+TBNXMggGg/1qoMcOHcxg+Op/Jmw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+  <script defer src="{{ url_for('static', filename='face-api.min.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+
+  <script defer src="face-api.min.js"></script>
+  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="index.css">
+
+
+  <!-- TFJS for Speech -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands"></script>
+
+</head>
+
+
+<body>
+
+  <div class="container mt-3">
+    <!-- <div id="controlBtns" class="d-flex justify-content-center pb-2 pe-2 ps-2 pt-3 mb-3"> -->
+      <!-- <div class="pe-1"><button id="startBtn" class="btn btn-primary">Start</button></div> -->
+      <!-- <div class="ps-1"><button id="resetBtn" class="btn btn-danger">Stop</button></div> -->
+    <!-- </div> -->
+
+    <div class="d-flex justify-content-center">
+      <button id="downloadBtn" class="btn btn-warning mb-2" hidden>Download Best Smile Image</button>
+    </div>
+
+
+    <div class="row" class="pt-4">
+      <div class="col-12 col-md-6">
+        <!-- <div class="fixed-top"> -->
+        <div id="video-container" class="d-flex justify-content-center pb-2 pt-2 fixed-top">
+          <video id="video" autoplay muted></video>
+          <canvas id="canvas" hidden></canvas>
+        </div>        
+      <!-- </div> -->
+      </div>
+      
+
+      <div class="col-12 col-md-4">
+          <div class="card rounded mb-3" id="scriptCard">
+            <div class="card-body">
+              <h5 class="card-title">脚本</h5>
+
+              <!-- Script Options -->
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="scriptDropdown" data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  スクリプトの選択
+                </button>
+                <div class="dropdown-menu" aria-labelledby="scriptDropdown">
+                  <h6 class="dropdown-header">あいさつ</h6>
+                  <a class="dropdown-item" href="#" data-script="おはようございます。">挨拶1</a>
+                  <a class="dropdown-item" href="#" data-script="よろしくお願いします。">挨拶2</a>
+                  <div class="dropdown-divider"></div>
+                  <h6 class="dropdown-header">対お客様</h6>
+                  <a class="dropdown-item" href="#" data-script="いつもお世話になっております。大塚商会の○○と申します。よろしくお願いいたします。">お客様向け自己紹介1</a>
+                  <a class="dropdown-item" href="#" data-script="いつもお世話になっております。大塚商会の○○と申します。本日はお時間いただきありがとうございます。">お客様向け自己紹介2</a>
+                </div>
+              </div>
+
+              <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+              <script>
+                // Handle script selection
+                $(document).on('click', '.dropdown-item[data-script]', function(e) {
+                  e.preventDefault();
+                  var script = $(this).data('script');
+                  $('#script-container').text(script);
+                });
+              </script>
+
+              <div class="card-text overflow-auto justify-content-center" id="script-container">
+                ここにスピーチを書いてください。
+                利用可能なテンプレートからスクリプトを選択することもできます。
+              </div>
+            </div>
+          </div>          
+      </div>
+
+
+
+      <div class="col-12 col-md-2">
+        <div class="row">
+          <div class="col-6 col-sm-12 mb-3">
+            <div class="card rounded" id="moodCard">
+              <div class="card-body">
+                <h5 class="card-title">ムード</h5>
+                <div class="card-text d-flex justify-content-center" id="emoji-container"></div>
+              </div>
+            </div>          
+          </div>
+        
+          <div class="col-6 col-sm-12">
+            <div class="card rounded" id="smileCard">
+              <div class="card-body">
+                <h5 class="card-title" style="font-size: 16px;">スマイルスコア</h5>
+                <div class="card-text d-flex justify-content-center" id="score-container"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+          <div class="card rounded mt-2 mb-3" id="adviceCard">
+            <div class="card-body">
+              <h5 class="card-title">スマイルアドバイス</h5>
+              <div class="card-text" id="advice-container">
+                <div id="advice-face"></div>
+                <br>
+                <div id="advice-mouth"></div>
+                <br>
+                <div id="advice-cheeks"></div>
+              </div>
+            </div>
+        </div>
+      </div>
+      
+
+      <div class="col-sm-3">
+        <div id="happyParent">
+        <div id="happyChartContainer"></div>
+        </div>
+      </div>
+
+      <div class="col-sm-3 mb-2">
+        <div id="allEmotionsParent">
+        <div id="allEmotionsChartContainer"></div></div>
+      </div>
+
+      <!-- <div class="col-12 col-md-2"> -->
+        <!-- <div class="row"> -->
+          <!-- <div class="col-6 col-sm-12"> -->
+              <!-- <div class="card rounded"> -->
+                <!-- <div class="card-body"> -->
+                  <!-- <h5 class="card-title">Mood</h5> -->
+                  <!-- <div class="card-text justify-content-center" id="emoji-container"> -->
+                <!-- </div> -->
+              <!-- </div>           -->
+            <!-- </div> -->
+          <!-- </div> -->
+          <!--  -->
+          <!-- <div class="col-6 col-sm-12"> -->
+            <!-- <div class="card rounded"> -->
+              <!-- <div class="card-body"> -->
+                <!-- <h5 class="card-title">Smile Score</h5> -->
+                <!-- <div class="card-text" id="score-container"> -->
+                <!-- </div> -->
+              <!-- </div> -->
+            <!-- </div> -->
+          <!-- </div> -->
+<!--  -->
+        <!-- </div> -->
+      <!-- </div> -->
+ 
+    </div>
+
+
+  </div>
+
+  <footer class="fixed-bottom">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div id="controlBtns" class="d-flex justify-content-center pb-2 pe-2 ps-2 pt-3">
+            <div class="pe-1"><button id="startBtn" class="btn btn-primary">始める</button></div>
+            <div class="ps-1"><button id="resetBtn" class="btn btn-danger" hidden>ストップ</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
